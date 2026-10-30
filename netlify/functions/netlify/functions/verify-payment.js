@@ -39,7 +39,8 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
-        reference: result.data.reference,
+status: 'success',
+reference: result.data.reference,
         amount: result.data.amount,
         currency: result.data.currency
       })
