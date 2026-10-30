@@ -1,0 +1,12 @@
+const form=document.getElementById('booking-form');
+const priceInput=form.elements.packagePrice;
+const preview=document.getElementById('deposit-preview');
+const message=document.getElementById('form-message');
+const money=n=>new Intl.NumberFormat('en-NG',{style:'currency',currency:'NGN',maximumFractionDigits:0}).format(n);
+priceInput.addEventListener('input',()=>{const amount=Number(priceInput.value)||0;preview.textContent=`Your 50% booking deposit: ${money(Math.ceil(amount/2))}`;});
+document.getElementById('year').textContent=new Date().getFullYear();
+const menu=document.querySelector('.menu-toggle'),nav=document.getElementById('nav');
+menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));});
+form.addEventListener('submit',async e=>{e.preventDefault();message.textContent='Preparing your secure payment…';const data=Object.fromEntries(new FormData(form).entries());data.packagePrice=Number(data.packagePrice);try{const response=await fetch('/.netlify/functions/initialize-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json();if(!response.ok)throw new Error(result.error||'Payment could not be started.');window.location.href=result.authorization_url;}catch(err){message.textContent=err.message+' You can also contact us on WhatsApp to complete your booking.';}});
+const wa=document.getElementById('whatsapp-booking');
+form.addEventListener('input',()=>{const d=Object.fromEntries(new FormData(form).entries());const text=`Hello Maxi Ceelaw Photography, I want to make a booking.\nName: ${d.name||''}\nService: ${d.service||''}\nEvent date: ${d.eventDate||''}\nPackage price: ${d.packagePrice?money(Number(d.packagePrice)):''}\nMy details: ${d.details||''}`;wa.href='https://wa.me/2347036055158?text='+encodeURIComponent(text);});
